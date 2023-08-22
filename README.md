@@ -7,7 +7,8 @@ open in visual studio code
 add remote development extension
 reopen vs code in container defined by docker.dev
 set up nuget.config
-    <?xml version="1.0" encoding="utf-8"?>
+```
+<?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <packageSources>
     <add key="hec-dss-nuget" value="https://www.hec.usace.army.mil/nexus/repository/dss/" />
@@ -20,3 +21,4 @@ set up nuget.config
         </usace-cc-sdk>
     </packageSourceCredentials>
 </configuration>
+```
