@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0 as dev
+
+RUN apt update
+RUN apt -y install libgfortran5
+RUN dotnet build
+
+COPY /workspaces/postprocesser/bin/Debug/net7.0 /app
+
+CMD ["/app/postprocessor"]
