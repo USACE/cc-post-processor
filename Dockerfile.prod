@@ -1,9 +1,17 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 as dev
+FROM mcr.microsoft.com/dotnet/sdk:7.0 as builder
 
-RUN apt update
-RUN apt -y install libgfortran5
-RUN dotnet build
+COPY . /src
 
-COPY /workspaces/postprocesser/bin/Debug/net7.0 /app
+RUN apt update &&\
+    apt -y install libgfortran5 &&\
+    cd /src &&\
+    dotnet build
+
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+
+COPY --from=builder /src/bin/Debug/net7.0 /app
+
+RUN apt update &&\
+    apt -y install libgfortran5
 
 CMD ["/app/postprocessor"]
