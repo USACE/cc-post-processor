@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Runtime.InteropServices;
 using System.Text;
 using Hec.Dss;
 using Usace.CC.Plugin;
@@ -197,6 +198,7 @@ output.Write(Encoding.ASCII.GetBytes(header));
 string line = "";
 for (int i = start; i <= end; i++){
     line = i.ToString();
+    Console.WriteLine("Processing event " + line);
     dataSource.Paths[0] = runs_dir + "/" + i + "/" + event_path;
     byte[] ret = await pm.getFile(dataSource,0);
     //write bytes to local path.
@@ -206,12 +208,18 @@ for (int i = start; i <= end; i++){
     int idx = 0;
     foreach(String recordName in records){
         DssPath dsspath = new DssPath(recordName);
-        RecordType rt = reader.GetRecordType(dsspath);
-        if(rt==RecordType.RegularTimeSeries){  
-            Double[] values = reader.GetTimeSeries(dsspath).Values;
-            line += ","+values.Max();
-            idx ++;
+        try{
+            RecordType rt = reader.GetRecordType(dsspath);
+            if(rt==RecordType.RegularTimeSeries){  
+                Double[] values = reader.GetTimeSeries(dsspath).Values;
+                line += ","+values.Max();
+                idx ++;
+            }            
+        }catch(Exception ex){
+            line += ","+Double.NaN;
+            Console.WriteLine(recordName + " not found.");
         }
+
     }
     line += "\n";
     output.Write(Encoding.ASCII.GetBytes(line));
