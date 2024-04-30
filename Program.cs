@@ -2,12 +2,24 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using Hec.Dss;
+using PostProcessor;
 using Usace.CC.Plugin;
 
 Console.WriteLine("post-processor!");
 
 PluginManager pm = await PluginManager.CreateAsync();
 Payload p = pm.Payload;
+
+//get block file to determine the event range for a realization
+byte[] blockFileBytes = await pm.getFile(pm.getInputDataSource("BlockFile"),0);
+BlockFile bf = new BlockFile(System.Text.Encoding.UTF8.GetString(blockFileBytes));//verify utf8
+
+//get the "event number" from the plugin manager through the environment variable, interpret it as the realization number for the frequency curve
+int eventNumber = pm.EventNumber();
+//download the dss files for the events in the realization
+
+
+Usace.CC.Plugin.Action[] a = p.Actions;
 String runs_dir = p.Attributes["runs_dir"];
 String event_path = p.Attributes["event_path"];
 String tmp_start = p.Attributes["start_idx"];
@@ -180,8 +192,9 @@ String[] records = new String[]{
 "//Wolf Creek Confluence/FLOW/14Jan1996 - 07Feb1996/1Hour/RUN:POR/",
 };
 DataSource dataSource = p.Inputs[0];
+
 string header = "event_number";
-foreach(String recordName in records){
+foreach(String recordName in dataSource.DataPaths){
     header = header + "," + recordName;
 }
 header = header + "\n";
