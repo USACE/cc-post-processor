@@ -89,7 +89,7 @@ namespace PostProcessor
             DataSource outputDest = pm.getOutputDataSource(_outputDataSourceString);
             bool success = await pm.FileWriter(ms,outputDest,0);
             
-            return true;
+            return success;
         }
     }
 }
