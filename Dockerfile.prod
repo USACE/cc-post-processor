@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 as builder
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as builder
 
 COPY . /src
 
@@ -7,9 +7,9 @@ RUN apt update &&\
     cd /src &&\
     dotnet build
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
-COPY --from=builder /src/bin/Debug/net7.0 /app
+COPY --from=builder /src/bin/Debug/net8.0 /app
 
 RUN apt update &&\
     apt -y install libgfortran5
