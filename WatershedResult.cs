@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace PostProcessor
 {
@@ -22,6 +23,30 @@ namespace PostProcessor
                 }
                 idx++;
             }
+        }
+        public void Sort(){
+            for( int i=0; i<Locations.Length;i++){
+                Locations[i].Sort();
+            }
+        }
+
+        internal byte[] Write(int realization)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Frequency");
+            foreach(LocationResult l in Locations){
+                sb.Append("," + l.Location +"_BlockID," + l.Location + "_EventID," + l.Location + "_Value");
+            }
+            sb.Append("\n");
+            int count = Locations[0].BlockResults.Length;
+            for(int i = 0; i < count; i ++){
+                sb.Append((float)i/(float)count);
+                foreach(LocationResult l in Locations){
+                    sb.Append("," + l.BlockResults[i].BlockNumber +"," + l.BlockResults[i].EventNumber + "," + l.BlockResults[i].Value + "");
+                }
+                sb.Append("\n");
+            }
+            return System.Text.Encoding.ASCII.GetBytes(sb.ToString());
         }
     }
 }

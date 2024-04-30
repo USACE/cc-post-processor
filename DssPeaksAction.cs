@@ -14,6 +14,8 @@ namespace PostProcessor
         private DataSource _dataSource;
         private static string substitutionStringKey = "substitution_string";
         private static string datasourceNameKey = "datasource_name";
+        private static string outputDataSourceNameKey = "output_datasource_name";
+        private string _outputDataSourceString;
         private string _substitutionString;
         public DssPeaksAction(Usace.CC.Plugin.Action a, PluginManager pm, BlockFile blockfile){
             //get the event number specified by the environment variable to interpret as the realization number
@@ -22,6 +24,7 @@ namespace PostProcessor
             _substitutionString = a.Parameters[substitutionStringKey];
             string datasourcename = a.Parameters[datasourceNameKey];
             _dataSource = pm.getInputDataSource(datasourcename);
+            _outputDataSourceString = a.Parameters[outputDataSourceNameKey];
             _blockFile = blockfile;
         }
         public async Task<bool> Compute(PluginManager pm){
@@ -79,6 +82,13 @@ namespace PostProcessor
                     }
                 }
             }
+            results.Sort();
+            //write out results for each location
+            byte[] bytes = results.Write(_realization);
+            MemoryStream ms = new MemoryStream(bytes);
+            DataSource outputDest = pm.getOutputDataSource(_outputDataSourceString);
+            bool success = await pm.FileWriter(ms,outputDest,0);
+            
             return true;
         }
     }

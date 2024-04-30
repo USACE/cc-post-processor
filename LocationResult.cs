@@ -12,5 +12,8 @@ namespace PostProcessor
         public void UpdateBlock(int blockId, int eventId, double value){
             BlockResults[blockId-1].UpdateValue(blockId, eventId, value);
         }
+        public void Sort(){
+            Array.Sort(BlockResults);
+        }
     }
 }
