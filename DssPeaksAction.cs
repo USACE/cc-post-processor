@@ -62,6 +62,7 @@ namespace PostProcessor
                     for(Int64 i = b.BlockEventStart; i <= b.BlockEventEnd; i++ ){//if a block has no events - this kinda breaks down alittle bit.
                         //download each event level dss file.
                         string dssFilePath = Strings.Replace(dssFilePathPattern,_substitutionString,i.ToString(),1,-1,CompareMethod.Binary);
+                        pm.LogMessage(new Message("Processing " + dssFilePath));
                         _dataSource.Paths[0] = dssFilePath;
                         System.IO.Stream dssStream = await pm.FileReader(_dataSource,0);
                         using(var fs = new FileStream("/data/file.dss",FileMode.Create)){
