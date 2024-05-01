@@ -1,6 +1,7 @@
 using System.Net.Mail;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 using Hec.Dss;
 using Microsoft.VisualBasic;
@@ -52,8 +53,12 @@ namespace PostProcessor
 
             string dssFilePathPattern = _dataSource.Paths[0];
             string localPath = "/data/file.dss";
+            int progress = 0;
             foreach(Block b in _blockFile.Blocks){
                 if (b.RealizationIndex == _realization){
+                    progress = 100*(int)((float)b.BlockIndex/(float)blockCount);
+                    pm.ReportProgress(new Status(Status.StatusLevel.COMPUTING,progress));
+                    pm.LogMessage(new Message("Processing Block " + b.BlockIndex + " of " + blockCount));
                     for(Int64 i = b.BlockEventStart; i <= b.BlockEventEnd; i++ ){//if a block has no events - this kinda breaks down alittle bit.
                         //download each event level dss file.
                         string dssFilePath = Strings.Replace(dssFilePathPattern,_substitutionString,i.ToString(),1,-1,CompareMethod.Binary);
