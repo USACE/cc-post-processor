@@ -54,7 +54,7 @@ namespace PostProcessor
             string localPath = "/data/file.dss";
             foreach(Block b in _blockFile.Blocks){
                 if (b.RealizationIndex == _realization){
-                    for(Int64 i = b.BlockEventStart; i < b.BlockEventEnd; i++ ){//if a block has no events - this kinda breaks down alittle bit.
+                    for(Int64 i = b.BlockEventStart; i <= b.BlockEventEnd; i++ ){//if a block has no events - this kinda breaks down alittle bit.
                         //download each event level dss file.
                         string dssFilePath = Strings.Replace(dssFilePathPattern,_substitutionString,i.ToString(),1,-1,CompareMethod.Binary);
                         _dataSource.Paths[0] = dssFilePath;
