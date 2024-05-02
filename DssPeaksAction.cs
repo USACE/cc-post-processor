@@ -56,7 +56,7 @@ namespace PostProcessor
             int progress = 0;
             foreach(Block b in _blockFile.Blocks){
                 if (b.RealizationIndex == _realization){
-                    progress = 100*(int)((float)b.BlockIndex/(float)blockCount);
+                    progress = (int)(100.0*(float)b.BlockIndex/(float)blockCount);
                     pm.ReportProgress(new Status(Status.StatusLevel.COMPUTING,progress));
                     pm.LogMessage(new Message("Processing Block " + b.BlockIndex + " of " + blockCount));
                     for(Int64 i = b.BlockEventStart; i <= b.BlockEventEnd; i++ ){//if a block has no events - this kinda breaks down alittle bit.

@@ -29,18 +29,60 @@ namespace PostProcessor
                 Locations[i].Sort();
             }
         }
+        private static double StandardNormalInverseCDF(double p)
+        {
+            //if (p <= 0) return Double.NegativeInfinity;
+            //if (p >= 1) return Double.PositiveInfinity;
+            //if (StandardDeviation == 0) return Mean;
+            //return invCDFNewton(p, Mean, 1e-10,100);
+            int i;
+            double x;
+            double q;
+            double c0 = 2.515517;
+            double c1 = .802853;
+            double c2 = .010328;
+            double d1 = 1.432788;
+            double d2 = .189269;
+            double d3 = .001308;
+            q = p;
+            if (q == .5) { return 0.0; }
+            if (q <= 0) { q = .000000000000001; }
+            if (q >= 1) { q = .999999999999999; }
+            if (q < .5) { i = -1; }
+            else
+            {
+                i = 1;
+                q = 1 - q;
+            }
 
+            double t = Math.Sqrt(Math.Log(1 / (q * q)));
+            double tsquared = t * t;
+            double tcubed = tsquared * t;
+            x = t - (c0 + c1 * t + c2 * (tsquared)) / (1 + d1 * t + d2 * tsquared + d3 * tcubed);
+            x = i * x;
+            return (x * 1.0);
+
+        }
         internal byte[] Write(int realization)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Frequency");
+            sb.Append("Frequency, NonExceedence, Plotting Position, Z Score,");
             foreach(LocationResult l in Locations){
                 sb.Append("," + l.Location +"_BlockID," + l.Location + "_EventID," + l.Location + "_Value");
             }
             sb.Append("\n");
             int count = Locations[0].BlockResults.Length;
             for(int i = 0; i < count; i ++){
-                sb.Append((float)i/(float)count);
+                float frequency =(float)i/(float)count;
+                sb.Append(frequency);
+                sb.Append(",");
+                sb.Append(1.0-frequency);
+                sb.Append(",");
+                float plottingPosition = (float)(count-i)/(float)(count+1);
+                sb.Append(plottingPosition);
+                sb.Append(",");
+                sb.Append(StandardNormalInverseCDF(plottingPosition));
+                sb.Append(",");
                 foreach(LocationResult l in Locations){
                     sb.Append("," + l.BlockResults[i].BlockNumber +"," + l.BlockResults[i].EventNumber + "," + l.BlockResults[i].Value + "");
                 }
