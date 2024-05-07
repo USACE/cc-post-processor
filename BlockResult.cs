@@ -8,12 +8,12 @@ namespace PostProcessor
         public BlockResult(int blockNumber){
             BlockNumber = blockNumber;
         }
-        internal void UpdateValue(int blockNumber, int eventNumber, double value)
+        internal void UpdateValue(int blockNumber, int eventNumber, double inValue)
         {
-            if (Value<value){
-                Value = value;
-                EventNumber = eventNumber;
-                BlockNumber = blockNumber;
+            if (this.Value < inValue){
+                this.Value = inValue;
+                this.EventNumber = eventNumber;
+                this.BlockNumber = blockNumber;
             }
         }
         public int CompareTo(BlockResult? other)

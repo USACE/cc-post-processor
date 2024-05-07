@@ -34,6 +34,14 @@ foreach(Usace.CC.Plugin.Action a in p.Actions){
                 return;
             }
             break;
+        case "dss_peak_volume_duration":
+            DssPeakVolumeDurationAction dpvda = new DssPeakVolumeDurationAction(a,pm,bf);
+            if(! await dpvda.Compute(pm)){
+                pm.ReportProgress(new Status(Status.StatusLevel.FAILED,50));
+
+                return;
+            }
+            break;
         default:
             break;
     }
