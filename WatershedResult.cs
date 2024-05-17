@@ -94,22 +94,20 @@ namespace PostProcessor
         internal byte[] WriteImportantEvents()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("BlockID, EventSet\n");
+            ArrayList eventSet = new System.Collections.ArrayList();
             int blockcount = Locations[0].BlockResults.Length;
             for(int i = 0; i < blockcount; i ++){
-                sb.Append(i);
-                ArrayList eventSet = new System.Collections.ArrayList();
                 foreach(LocationResult l in Locations){
                     if (!eventSet.Contains(l.BlockResults[i].EventNumber)){
                         eventSet.Add(l.BlockResults[i].EventNumber);
                     }
                 }
-                foreach(int e in eventSet){
-                    sb.Append(",");
-                    sb.Append(e);
-                }
-                sb.Append("\n");
             }
+            foreach(int e in eventSet){
+                sb.Append(",");
+                sb.Append(e);
+            }
+            sb.Append("\n");
             return System.Text.Encoding.ASCII.GetBytes(sb.ToString());
         }
     }

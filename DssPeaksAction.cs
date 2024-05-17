@@ -101,7 +101,7 @@ namespace PostProcessor
                 byte[] importantbytes = results.WriteImportantEvents();
                 MemoryStream importantms = new MemoryStream(importantbytes);
                 DataSource importantoutputDest = pm.getOutputDataSource(_importantEventsOutputDataSourceString);
-                bool importantsuccess = await pm.FileWriter(ms,importantoutputDest,0);
+                bool importantsuccess = await pm.FileWriter(importantms,importantoutputDest,0);
                 return importantsuccess;             
             }
 
