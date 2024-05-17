@@ -106,7 +106,7 @@ namespace PostProcessor
             }
             results.Sort();
             //write out results for each location
-            byte[] bytes = results.Write(_realization);
+            byte[] bytes = results.Write();
             MemoryStream ms = new MemoryStream(bytes);
             DataSource outputDest = pm.getOutputDataSource(_outputDataSourceString);
             bool success = await pm.FileWriter(ms,outputDest,0);

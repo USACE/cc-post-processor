@@ -16,7 +16,9 @@ namespace PostProcessor
         private static string substitutionStringKey = "substitution_string";
         private static string datasourceNameKey = "datasource_name";
         private static string outputDataSourceNameKey = "output_datasource_name";
+        private static string importantEventsOutputDatasourceNameKey = "important_events_output_datasource_name";
         private string _outputDataSourceString;
+        private string _importantEventsOutputDataSourceString;
         private string _substitutionString;
         public DssPeaksAction(Usace.CC.Plugin.Action a, PluginManager pm, BlockFile blockfile){
             //get the event number specified by the environment variable to interpret as the realization number
@@ -26,6 +28,7 @@ namespace PostProcessor
             string datasourcename = a.Parameters[datasourceNameKey];
             _dataSource = pm.getInputDataSource(datasourcename);
             _outputDataSourceString = a.Parameters[outputDataSourceNameKey];
+            _importantEventsOutputDataSourceString = a.Parameters[importantEventsOutputDatasourceNameKey];
             _blockFile = blockfile;
         }
         public async Task<bool> Compute(PluginManager pm){
@@ -90,11 +93,18 @@ namespace PostProcessor
             }
             results.Sort();
             //write out results for each location
-            byte[] bytes = results.Write(_realization);
+            byte[] bytes = results.Write();
             MemoryStream ms = new MemoryStream(bytes);
             DataSource outputDest = pm.getOutputDataSource(_outputDataSourceString);
             bool success = await pm.FileWriter(ms,outputDest,0);
-            
+            if (success){
+                byte[] importantbytes = results.WriteImportantEvents();
+                MemoryStream importantms = new MemoryStream(importantbytes);
+                DataSource importantoutputDest = pm.getOutputDataSource(_importantEventsOutputDataSourceString);
+                bool importantsuccess = await pm.FileWriter(ms,importantoutputDest,0);
+                return importantsuccess;             
+            }
+
             return success;
         }
     }
