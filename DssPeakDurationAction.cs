@@ -22,15 +22,21 @@ namespace PostProcessor
         private string _substitutionString;
         public DssPeakDurationAction(Usace.CC.Plugin.Action a, PluginManager pm, BlockFile blockfile)
         {
+            pm.LogMessage(new Message("in the constructor"));
             //get the event number specified by the environment variable to interpret as the realization number
             _realization = pm.EventNumber();
             //get the substitution string from the action
+            
             _substitutionString = a.Parameters[substitutionStringKey];
             _timesteps = Int32.Parse(a.Parameters[timeSetpsKey]);
             string datasourcename = a.Parameters[datasourceNameKey];
             _dataSource = pm.getInputDataSource(datasourcename);
             _outputDataSourceString = a.Parameters[outputDataSourceNameKey];
             _blockFile = blockfile;
+            pm.LogMessage(new Message(_substitutionString));
+            pm.LogMessage(new Message(_timesteps.ToString()));
+            pm.LogMessage(new Message(datasourcename));
+            pm.LogMessage(new Message(_outputDataSourceString));
         }
         public async Task<bool> Compute(PluginManager pm)
         {
