@@ -113,7 +113,7 @@ namespace PostProcessor
                                             }
                                         }
                                     }
-                                    results.UpdateLocation(recordName, b.BlockIndex, (int)i, maxval/(float)/_timesteps);
+                                    results.UpdateLocation(recordName, b.BlockIndex, (int)i, maxval/(float)_timesteps);
                                     idx++;
                                 }
                             }
