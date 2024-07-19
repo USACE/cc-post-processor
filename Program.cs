@@ -42,6 +42,14 @@ foreach(Usace.CC.Plugin.Action a in p.Actions){
                 return;
             }
             break;
+        case "dss_peak_duration":
+            DssPeakDurationAction dpda = new DssPeakDurationAction(a,pm,bf);
+            if(! await dpda.Compute(pm)){
+                pm.ReportProgress(new Status(Status.StatusLevel.FAILED,50));
+
+                return;
+            }
+            break;
         default:
             break;
     }
