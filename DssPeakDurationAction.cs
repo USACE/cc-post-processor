@@ -91,7 +91,7 @@ namespace PostProcessor
                             dssStream.CopyTo(fs);//@TODO:verify this
                         }
                         DssReader reader = new DssReader(localPath, 0);
-                        int idx = 0;
+                        //int idx = 0;
                         foreach (String recordName in _dataSource.DataPaths)
                         {
                             DssPath dsspath = new DssPath(recordName);
@@ -103,10 +103,10 @@ namespace PostProcessor
                                     double[] values = reader.GetTimeSeries(dsspath).Values;
                                     double maxval = 0.0;
                                     double runningVal = 0.0;
-                                    for (int timestep = 0; i < values.Length; i++)
+                                    for (int timestep = 0; timestep < values.Length; timestep++)
                                     {
                                         runningVal += values[timestep];
-                                        if (timestep == (_timesteps - 1))
+                                        if (timestep < _timesteps)
                                         {
                                             maxval = runningVal;
                                         }
@@ -119,12 +119,13 @@ namespace PostProcessor
                                             }
                                         }
                                     }
-                                    results.UpdateLocation(recordName, b.BlockIndex, (int)i, maxval/(float)_timesteps);
-                                    idx++;
+                                    results.UpdateLocation(recordName, b.BlockIndex, (int)i, maxval/(double)_timesteps);
+                                    //idx++;
                                 }
                             }
                             catch (Exception ex)
                             {
+                                Console.WriteLine(ex.Message);
                                 Console.WriteLine(recordName + " not found.");
                                 return false;
                             }

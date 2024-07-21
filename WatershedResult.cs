@@ -83,7 +83,7 @@ namespace PostProcessor
                 sb.Append(plottingPosition);
                 sb.Append(",");
                 sb.Append(StandardNormalInverseCDF(plottingPosition));
-                sb.Append(",");
+                //sb.Append(",");
                 foreach(LocationResult l in Locations){
                     sb.Append("," + l.BlockResults[i].BlockNumber +"," + l.BlockResults[i].EventNumber + "," + l.BlockResults[i].Value + "");
                 }

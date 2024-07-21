@@ -81,9 +81,9 @@ namespace PostProcessor
                                         double[] values = reader.GetTimeSeries(dsspath).Values;
                                         double maxval = 0.0;
                                         double runningVal = 0.0;
-                                        for(int timestep = 0; i < values.Length; i ++){
+                                        for(int timestep = 0; timestep < values.Length; timestep ++){
                                             runningVal += values[timestep];
-                                            if (timestep==(_timesteps-1)){
+                                            if (timestep<_timesteps){
                                                 maxval = runningVal;
                                             }else{
                                                 runningVal -= values[timestep-_timesteps];
