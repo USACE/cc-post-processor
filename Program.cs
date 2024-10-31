@@ -60,18 +60,26 @@ string substitutionStringKey = "substitution_string";
             return;
         }
         int blockCount = 0;
+        int eventCount = 0;
         foreach (Block b in bf.Blocks)
         {
             if (b.RealizationIndex == eventNumber)//using event number to understand which realization to use
             {
                 blockCount++;
+                eventCount += b.BlockEventCount;
             }
+            
         }
         //need one watershed result per action
         Dictionary<Usace.CC.Plugin.Action,WatershedResult> results = new Dictionary<Usace.CC.Plugin.Action, WatershedResult>();
         Dictionary<Usace.CC.Plugin.Action, DSSAction> actions = new Dictionary<Usace.CC.Plugin.Action, DSSAction>();
         foreach(Usace.CC.Plugin.Action a in p.Actions){
-            results[a] = new WatershedResult(_dataSource.DataPaths, blockCount, byBlock);
+            if(byBlock){
+                results[a] = new WatershedResult(_dataSource.DataPaths, blockCount, byBlock);
+            }else{
+                results[a] = new WatershedResult(_dataSource.DataPaths, eventCount, byBlock);
+            }
+            
             switch (a.Name)
             {
                 case "dss_peak":
@@ -94,9 +102,9 @@ string substitutionStringKey = "substitution_string";
         {
             if (b.RealizationIndex == eventNumber)
             {
-                progress = (int)(100.0 * b.BlockIndex / blockCount);
-                pm.ReportProgress(new Status(Status.StatusLevel.COMPUTING, progress));
-                pm.LogMessage(new Message("Processing Block " + b.BlockIndex + " of " + blockCount));
+                    progress = (int)(100.0 * b.BlockIndex / blockCount);
+                    pm.ReportProgress(new Status(Status.StatusLevel.COMPUTING, progress));
+                    pm.LogMessage(new Message("Processing Block " + b.BlockIndex + " of " + blockCount));
                 for (long i = b.BlockEventStart; i <= b.BlockEventEnd; i++)
                 {//if a block has no events - this kinda breaks down alittle bit.
                  //download each event level dss file.
