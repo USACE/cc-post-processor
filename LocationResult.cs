@@ -4,19 +4,33 @@ namespace PostProcessor
 {
     public class LocationResult{
         public string Location;
-        public BlockResult[] BlockResults;
-        public LocationResult(string locationName, int blockCount){
+        public Result[] Results;
+        private bool byBlock;
+        public LocationResult(string locationName, int count, bool byBlock){
             Location = locationName;
-            BlockResults = new BlockResult[blockCount];//-1?
-            for( int i = 0; i<blockCount; i++){
-                BlockResults[i] = new BlockResult(i+1);
-            }
+            this.byBlock = byBlock;
+            if (byBlock){
+                Results = new BlockResult[count];
+                for( int i = 0; i<count; i++){
+                        Results[i] = new BlockResult(i+1);
+                }
+            }else{
+                Results = new EventResult[count];
+                for( int i = 0; i<count; i++){
+                        Results[i] = new EventResult(i+1);
+                }
+             }
         }
-        public void UpdateBlock(int blockId, int eventId, double value){
-            BlockResults[blockId-1].UpdateValue(blockId, eventId, value);
+        public void Update(int blockId, int eventId, double value){
+            if (byBlock){
+                Results[blockId-1].Update(blockId, eventId, value);
+            }else{
+                Results[eventId-1].Update(blockId, eventId, value);
+            }
+            
         }
         public void Sort(){
-            Array.Sort(BlockResults);
+            Array.Sort(Results);
         }
     }
 }

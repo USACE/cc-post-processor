@@ -6,11 +6,11 @@ namespace PostProcessor
 {
     public class WatershedResult{
         public LocationResult[] Locations;
-        public WatershedResult(string[] locations, int blockCount){
+        public WatershedResult(string[] locations, int count, bool byBlock){
             Locations = new LocationResult[locations.Length];
             int idx = 0;
             foreach(string l in locations){
-                Locations[idx] = new LocationResult(l,blockCount);
+                Locations[idx] = new LocationResult(l,count, byBlock);
                 idx++;
             }
         }
@@ -18,7 +18,7 @@ namespace PostProcessor
             int idx = 0;
             foreach(LocationResult l in Locations){
                 if (l.Location.Equals(locationName)){
-                    l.UpdateBlock(blockId,eventId,value);
+                    l.Update(blockId,eventId,value);
                     Locations[idx] = l;//unnecessary?
                     return;
                 }
@@ -72,7 +72,7 @@ namespace PostProcessor
                 sb.Append("," + l.Location +"_BlockID," + l.Location + "_EventID," + l.Location + "_Value");
             }
             sb.Append("\n");
-            int count = Locations[0].BlockResults.Length;
+            int count = Locations[0].Results.Length;
             for(int i = 0; i < count; i ++){
                 float frequency =(float)i/(float)count;
                 sb.Append(frequency);
@@ -85,7 +85,7 @@ namespace PostProcessor
                 sb.Append(StandardNormalInverseCDF(plottingPosition));
                 //sb.Append(",");
                 foreach(LocationResult l in Locations){
-                    sb.Append("," + l.BlockResults[i].BlockNumber +"," + l.BlockResults[i].EventNumber + "," + l.BlockResults[i].Value + "");
+                    sb.Append("," + l.Results[i].Block +"," + l.Results[i].Event + "," + l.Results[i].Value + "");
                 }
                 sb.Append("\n");
             }
@@ -95,11 +95,11 @@ namespace PostProcessor
         {
             StringBuilder sb = new StringBuilder();
             ArrayList eventSet = new System.Collections.ArrayList();
-            int blockcount = Locations[0].BlockResults.Length;
+            int blockcount = Locations[0].Results.Length;
             for(int i = 0; i < blockcount; i ++){
                 foreach(LocationResult l in Locations){
-                    if (!eventSet.Contains(l.BlockResults[i].EventNumber)){
-                        eventSet.Add(l.BlockResults[i].EventNumber);
+                    if (!eventSet.Contains(l.Results[i].Event)){
+                        eventSet.Add(l.Results[i].Event);
                     }
                 }
             }
