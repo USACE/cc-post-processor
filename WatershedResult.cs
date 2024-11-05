@@ -6,8 +6,10 @@ namespace PostProcessor
 {
     public class WatershedResult{
         public LocationResult[] Locations;
-        public WatershedResult(string[] locations, int count, bool byBlock){
+        private int _startIndex;
+        public WatershedResult(string[] locations, int count, int startIndex, bool byBlock){
             Locations = new LocationResult[locations.Length];
+            this._startIndex = startIndex;
             int idx = 0;
             foreach(string l in locations){
                 Locations[idx] = new LocationResult(l,count, byBlock);
@@ -18,7 +20,7 @@ namespace PostProcessor
             int idx = 0;
             foreach(LocationResult l in Locations){
                 if (l.Location.Equals(locationName)){
-                    l.Update(blockId,eventId,value);
+                    l.Update(blockId,eventId-_startIndex,value);
                     Locations[idx] = l;//unnecessary?
                     return;
                 }
@@ -85,7 +87,7 @@ namespace PostProcessor
                 sb.Append(StandardNormalInverseCDF(plottingPosition));
                 //sb.Append(",");
                 foreach(LocationResult l in Locations){
-                    sb.Append("," + l.Results[i].Block +"," + l.Results[i].Event + "," + l.Results[i].Value + "");
+                    sb.Append("," + l.Results[i].Block +"," + l.Results[i].Event+_startIndex + "," + l.Results[i].Value + "");
                 }
                 sb.Append("\n");
             }

@@ -24,7 +24,8 @@ string substitutionStringKey = "substitution_string";
         Block myblock = new Block();
 
 
-
+        DataSource ds1 = pm.getInputDataSource("BlockFile");
+        Console.WriteLine(ds1.Paths[0]);
         //get block file to determine the event range for a realization
         byte[] blockFileBytes = await pm.getFile(pm.getInputDataSource("BlockFile"), 0);
         BlockFile bf = new BlockFile(Encoding.UTF8.GetString(blockFileBytes));//verify utf8
@@ -61,12 +62,16 @@ string substitutionStringKey = "substitution_string";
         }
         int blockCount = 0;
         int eventCount = 0;
+        long eventStartIndex = 1;
         foreach (Block b in bf.Blocks)
         {
             if (b.RealizationIndex == eventNumber)//using event number to understand which realization to use
             {
                 blockCount++;
                 eventCount += b.BlockEventCount;
+                if (b.BlockIndex == 1){
+                    eventStartIndex = b.BlockEventStart;
+                }
             }
             
         }
@@ -75,9 +80,9 @@ string substitutionStringKey = "substitution_string";
         Dictionary<Usace.CC.Plugin.Action, DSSAction> actions = new Dictionary<Usace.CC.Plugin.Action, DSSAction>();
         foreach(Usace.CC.Plugin.Action a in p.Actions){
             if(byBlock){
-                results[a] = new WatershedResult(_dataSource.DataPaths, blockCount, byBlock);
+                results[a] = new WatershedResult(_dataSource.DataPaths, blockCount, 0, byBlock);
             }else{
-                results[a] = new WatershedResult(_dataSource.DataPaths, eventCount, byBlock);
+                results[a] = new WatershedResult(_dataSource.DataPaths, eventCount, (int)eventStartIndex, byBlock);
             }
             
             switch (a.Name)
@@ -128,7 +133,7 @@ string substitutionStringKey = "substitution_string";
                                     TimeSeries ts = reader.GetTimeSeries(dsspath);
                                     foreach (Usace.CC.Plugin.Action a in p.Actions)
                                     {
-                                        results[a].UpdateLocation(recordName,b.BlockIndex,(int)i, actions[a].Compute(ts));
+                                        results[a].UpdateLocation(recordName,b.BlockIndex,(int)i, actions[a].Compute(ts));//-(int)eventStartIndex
                                     }
                                 }
                             }catch(Exception ex){

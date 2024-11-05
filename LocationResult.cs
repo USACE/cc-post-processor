@@ -25,7 +25,7 @@ namespace PostProcessor
             if (byBlock){
                 Results[blockId-1].Update(blockId, eventId, value);
             }else{
-                Results[eventId-1].Update(blockId, eventId, value);
+                Results[eventId].Update(blockId, eventId, value);
             }
             
         }
