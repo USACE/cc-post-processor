@@ -1,5 +1,5 @@
 /bin
 /obj
-nuget.config
 /.devcontainer
 /.vscode
+/.vs
